@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+# Allowed Domains
+{% for addr in postfix_allowed_domains %}
+{{ addr }} OK
+{% endfor %}
+# Allowed Domains
+{% for addr in postfix_allowed_addresses %}
+{{ addr }} OK
+{% endfor %}

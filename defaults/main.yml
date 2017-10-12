@@ -1,0 +1,26 @@
+---
+# defaults file for mail_relay
+postfix_domain: "{{ ansible_domain }}"
+postfix_hostname: "{{ ansible_fqdn }}"
+
+postfix_inet_interfaces:
+  - localhost
+
+postfix_networks: []
+postfix_relayhost:
+
+# If set to true, the two settings below will act as whitelists of allowed recipients.
+postfix_use_recipient_domains: False
+
+# List of domains that servers can relay mail to.
+postfix_allowed_domains: []
+
+# List of email addresses that servers can relay mail to.
+postfix_allowed_addresses: []
+
+postfix_canonicals: []
+postfix_generics: []
+postfix_transports: []
+
+postfix_msg_size_limit: 52428800
+postfix_mailbox_size_limit: 1073741824

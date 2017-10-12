@@ -1,0 +1,7 @@
+---
+# handlers file for postfix
+- name: postfix restart
+  service: name=postfix state=restarted
+
+- name: recipient_domains rebuild
+  command: /usr/sbin/postmap /etc/postfix/recipient_domains

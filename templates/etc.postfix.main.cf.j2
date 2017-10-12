@@ -1,0 +1,53 @@
+# {{ ansible_managed }}
+queue_directory = /var/spool/postfix
+command_directory = /usr/sbin
+daemon_directory = /usr/libexec/postfix
+mail_owner = postfix
+
+myhostname = {{ postfix_hostname }}
+mydomain = {{ postfix_domain }}
+
+myorigin = $mydomain
+
+inet_interfaces = {{ postfix_inet_interfaces | join(', ') }}
+
+mydestination = $myhostname, localhost.$mydomain, localhost
+
+unknown_local_recipient_reject_code = 550
+
+{% if postfix_networks %}
+mynetworks = {{ postfix_networks | join(', ') }}
+{% endif %}
+{% if postfix_relayhost %}
+relayhost = [{{ postfix_relayhost }}]
+{% endif %}
+
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+
+smtpd_banner = $myhostname ESMTP Postfix
+
+sendmail_path = /usr/sbin/sendmail.postfix
+newaliases_path = /usr/bin/newaliases.postfix
+mailq_path = /usr/bin/mailq.postfix
+setgid_group = postdrop
+html_directory = no
+
+message_size_limit = {{ postfix_msg_size_limit }}
+mailbox_size_limit = {{ postfix_mailbox_size_limit }}
+
+local_header_rewrite_clients = permit_mynetworks
+
+canonical_maps = regexp:/etc/postfix/canonical
+smtp_generic_maps = texthash:/etc/postfix/generic
+transport_maps = texthash:/etc/postfix/transport
+data_directory = /var/lib/postfix
+
+{% if postfix_use_recipient_domains %}
+# Block external mail delivery
+maximal_queue_lifetime = 1d
+bounce_queue_lifetime = 12h
+smtpd_recipient_restrictions = check_recipient_access hash:/etc/postfix/recipient_domains, reject
+{% endif %}
+
+smtp_tls_security_level = may

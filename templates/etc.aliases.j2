@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+
+postmaster: root
+postfix: root
+MAILER-DAEMON: postmaster
+nobody: /dev/null
+
+{% for key, value in postfix_aliases.iteritems() %}
+{{ key }}: {{ value | join(',') }}
+{% endfor %}

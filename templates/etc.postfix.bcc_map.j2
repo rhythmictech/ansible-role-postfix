@@ -1,7 +1,7 @@
 # {{ ansible_managed }}
 
-{% if postfix_canonicals|default(False) %}
-{% for entry in postfix_canonicals %}
+{% if postfix_bcc_map|default(False) %}
+{% for entry in postfix_bcc_map %}
 {{ entry.source }} {{ entry.target }}
 {% endfor %}
 {% endif %}

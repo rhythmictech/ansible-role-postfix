@@ -1,0 +1,45 @@
+# Enable DKIM signing support
+- name: ensure opendkim packages are installed
+  yum: name={{ item }} state=present
+  with_items:
+    - opendkim
+  tags: ['postfix']
+
+- name: place opendkim keys
+  copy:
+    content: "{{ item.key }}"
+    dest: "/etc/opendkim/keys/{{ item.selector }}._domainkey.{{ item.domain }}.private"
+    owner: opendkim
+    group: opendkim
+    mode: 0400
+  notify: postfix opendkim restart
+  with_items: "{{ postfix_dkim_domainlist }}"
+  tags: ['postfix']
+
+- name: place opendkim table files
+  template:
+    src: "etc.opendkim.{{ item }}.j2"
+    dest: "/etc/opendkim/{{ item }}"
+    owner: opendkim
+    group: opendkim
+    mode: 0640
+  notify: postfix opendkim restart
+  with_items:
+    - KeyTable
+    - SigningTable
+    - TrustedHosts
+  tags: ['postfix']
+
+- name: place opendkim config file
+  template:
+    src: "etc.opendkim.conf.j2"
+    dest: "/etc/opendkim.conf"
+    owner: opendkim
+    group: opendkim
+    mode: 0640
+  notify: postfix opendkim restart
+  tags: ['postfix']
+
+- name: ensure opendkim is started and enabled
+  service: name=opendkim state=started enabled=yes
+  tags: ['postfix']

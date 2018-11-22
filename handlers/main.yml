@@ -1,7 +1,34 @@
 ---
 # handlers file for postfix
-- name: postfix restart
+- name: postfix postfix restart
   service: name=postfix state=restarted
 
-- name: recipient_domains rebuild
+- name: postfix postfix reload
+  service: name=postfix state=reloaded
+
+- name: postfix access rebuild
+  command: /usr/sbin/postmap /etc/postfix/access
+
+- name: postfix aliases rebuild
+  command: /usr/bin/newaliases
+
+- name: postfix generic rebuild
+  command: /usr/sbin/postmap /etc/postfix/generic
+
+- name: postfix recipient_domains rebuild
   command: /usr/sbin/postmap /etc/postfix/recipient_domains
+
+- name: postfix sasl_passwd rebuild
+  command: /usr/sbin/postmap /etc/postfix/sasl_passwd
+
+- name: postfix sender_relay rebuild
+  command: /usr/sbin/postmap /etc/postfix/sender_relay
+
+- name: postfix transport rebuild
+  command: /usr/sbin/postmap /etc/postfix/transport
+
+- name: postfix virtual rebuild
+  command: /usr/sbin/postmap /etc/postfix/virtual
+
+- name: postfix opendkim restart
+  service: name=opendkim state=restarted

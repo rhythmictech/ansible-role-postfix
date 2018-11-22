@@ -1,9 +1,7 @@
 # {{ ansible_managed }}
-# Allowed Domains
-{% for addr in postfix_allowed_domains %}
+{% for addr in postfix_allowed_rcpt_domains %}
 {{ addr }} OK
 {% endfor %}
-# Allowed Domains
-{% for addr in postfix_allowed_addresses %}
+{% for addr in postfix_allowed_rcpt_addresses %}
 {{ addr }} OK
 {% endfor %}

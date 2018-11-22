@@ -1,1 +1,12 @@
 # {{ ansible_managed }}
+
+{% if postfix_sanitize_headers %}
+/^Mime-Version:/                IGNORE
+/^Received:.*with ESMTPSA/      IGNORE
+/^Received:.*with ESMTP/        IGNORE
+/^Received:.*with EHLO/         IGNORE
+/^User-Agent:/ 	                IGNORE
+/^X-Originating-IP:/            IGNORE
+/^X-Mailer:/                    IGNORE
+#/^Message-Id:/                 IGNORE
+{% endif %}

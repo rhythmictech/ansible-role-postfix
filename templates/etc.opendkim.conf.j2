@@ -1,0 +1,33 @@
+# {{ ansible_managed }}
+
+## CONFIGURATION OPTIONS
+
+PidFile /var/run/opendkim/opendkim.pid
+AutoRestart     yes
+AutoRestartRate 10/1h
+
+Mode    s
+
+Syslog  yes
+SyslogSuccess   yes
+LogWhy  yes
+
+UserID  opendkim:opendkim
+Socket  inet:8891@localhost
+Umask   002
+
+SendReports     no
+
+SoftwareHeader  no
+
+## SIGNING OPTIONS
+
+Canonicalization        relaxed/relaxed
+MinimumKeyBits  1024
+
+KeyTable        /etc/opendkim/KeyTable
+SigningTable    refile:/etc/opendkim/SigningTable
+InternalHosts   refile:/etc/opendkim/TrustedHosts
+
+OversignHeaders From
+QueryCache      yes

@@ -1,0 +1,4 @@
+# {{ ansible_managed }}
+{% for domain in postfix_dkim_domainlist %}
+*@{{ domain.domain }}   {{ domain.selector }}._domainkey.{{ domain.domain }}
+{% endfor %}

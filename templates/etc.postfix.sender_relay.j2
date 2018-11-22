@@ -1,0 +1,4 @@
+# {{ ansible_managed }}
+{% for sender_relay in postfix_sender_relay %}
+{{ sender_relay }}
+{% endfor %}

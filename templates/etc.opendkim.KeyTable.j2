@@ -1,0 +1,4 @@
+# {{ ansible_managed }}
+{% for domain in postfix_dkim_domainlist %}
+{{ domain.selector }}._domainkey.{{ domain.domain }} {{ domain.domain }}:{{ domain.selector }}:/etc/opendkim/keys/{{ domain.selector }}._domainkey.{{ domain.domain }}.private
+{% endfor %}

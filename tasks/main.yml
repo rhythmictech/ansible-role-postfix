@@ -1,56 +1,98 @@
-# Mail relay
+
 - name: ensure postfix packages are installed
   yum: name={{ item }} state=present
   with_items:
     - postfix
+    - cyrus-sasl
+    - cyrus-sasl-lib
+    - cyrus-sasl-plain
+  tags: ['postfix']
+
+- name: configure dkim signing (include)
+  include: opendkim.yml
+  when: postfix_enable_dkim == true
   tags: ['postfix']
 
 - name: ensure the postfix directory is configured
   file: path=/etc/postfix state=directory owner=root group=postfix mode=0750
   tags: ['postfix']
 
-- name: template postfix config files
+- name: place postfix config file templates (maps)
   template:
     src: "etc.postfix.{{ item }}.j2"
     dest: "/etc/postfix/{{ item }}"
     owner: root
     group: postfix
     mode: 0640
+  notify: "postfix {{ item }} rebuild"
   with_items:
     - access
-    - canonical
     - generic
-    - header_checks
+    - recipient_domains
+    - sasl_passwd
+    - sender_relay
     - transport
+    - virtual
+  tags: ['postfix']
+
+- name: place postfix config file templates (static)
+  template: 
+    src: "etc.postfix.{{ item }}.j2"
+    dest: "/etc/postfix/{{ item }}"
+    owner: root 
+    group: postfix 
+    mode: 0640
+  with_items:
+    - bcc_map
+    - canonical
+    - header_checks
     - main.cf
-  notify: postfix restart
+  notify: postfix postfix reload
   tags: ['postfix']
 
 - name: ensure other config files are removed
   file: path=/etc/postfix/{{ item }} state=absent
   with_items:
     - relocated
-    - virtual
+  notify: postfix postfix reload
   tags: ['postfix']
 
-- name: ensure allowed domains is present for internal mail relay
+- name: place local mail aliases
   template:
-    src: etc.postfix.recipient_domains.j2
-    dest: /etc/postfix/recipient_domains
+    src: etc.aliases.j2
+    dest: /etc/aliases
     owner: root
     group: postfix
     mode: 0640
-  notify: recipient_domains rebuild
-  when: postfix_use_recipient_domains
+  notify: postfix aliases rebuild
   tags: ['postfix']
 
-- name: ensure allowed domains is absent for external mail relay
-  file: path={{ item }} state=absent
+- name: make maillog group readable for collectd
+  file: path=/var/log/maillog state=touch owner=root group=collectd mode=0640
+  tags: ['postfix', 'collectd']
+
+- name: place the postfix_collectd config
+  template:
+    src: etc.collectd.d.{{ item }}
+    dest: /etc/collectd.d/{{ item }}
+    owner: root
+    group: collectd
+    mode: 0640
   with_items:
-    - /etc/postfix/recipient_domains
-    - /etc/postfix/recipient_domains.db
-  when: not postfix_use_recipient_domains
-  tags: ['postfix']
+    - postfix_collectd.conf
+  notify: restart collectd
+  tags: ['postfix', 'collectd']
+
+- name: place custom nagios plugins
+  copy:
+    src: usr.lib64.nagios.plugins.{{ item }}
+    dest: /usr/lib64/nagios/plugins/{{ item }}
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+    - check_relay_monitoring.sh
+  tags: ['postfix', 'ncpa']
 
 - name: ensure postfix is started and enabled
   service: name=postfix state=started enabled=yes

@@ -1,0 +1,4 @@
+# {{ ansible_managed }}
+{% for sasl_passwd in postfix_sasl_passwds %}
+{{ sasl_passwd }}
+{% endfor %}

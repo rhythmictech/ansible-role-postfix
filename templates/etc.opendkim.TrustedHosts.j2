@@ -1,0 +1,4 @@
+# {{ ansible_managed }}
+{% for host in postfix_dkim_trusted_hosts %}
+{{ host }}
+{% endfor %}

@@ -1,53 +1,83 @@
 # {{ ansible_managed }}
+
+smtpd_banner = $myhostname ESMTP Postfix
+
+data_directory = /var/lib/postfix
 queue_directory = /var/spool/postfix
 command_directory = /usr/sbin
 daemon_directory = /usr/libexec/postfix
-mail_owner = postfix
-
-myhostname = {{ postfix_hostname }}
-mydomain = {{ postfix_domain }}
-
-myorigin = $mydomain
-
-inet_interfaces = {{ postfix_inet_interfaces | join(', ') }}
-
-mydestination = $myhostname, localhost.$mydomain, localhost
-
-unknown_local_recipient_reject_code = 550
-
-{% if postfix_networks %}
-mynetworks = {{ postfix_networks | join(', ') }}
-{% endif %}
-{% if postfix_relayhost %}
-relayhost = [{{ postfix_relayhost }}]
-{% endif %}
 
 alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
 
-smtpd_banner = $myhostname ESMTP Postfix
-
 sendmail_path = /usr/sbin/sendmail.postfix
 newaliases_path = /usr/bin/newaliases.postfix
 mailq_path = /usr/bin/mailq.postfix
-setgid_group = postdrop
-html_directory = no
 
-message_size_limit = {{ postfix_msg_size_limit }}
-mailbox_size_limit = {{ postfix_mailbox_size_limit }}
+mail_owner = postfix
+setgid_group = postdrop
+
+myhostname = {{ postfix_myhostname }}
+mydomain = {{ postfix_mydomain }}
+myorigin = $mydomain
+mydestination = $myhostname, localhost.$mydomain, localhost
+
+inet_protocols = {{ postfix_inet_protocols | default("ipv4") }}
+inet_interfaces = {{ postfix_inet_interfaces | join(', ') }}
+
+{% if postfix_mynetworks %}
+mynetworks = {{ postfix_mynetworks | join(', ') }}
+{% endif %}
+
+{% if postfix_relayhost %}
+relayhost = [{{ postfix_relayhost }}]
+{% endif %}
+
+message_size_limit = {{ postfix_message_size_limit }}
+unknown_local_recipient_reject_code = 550
 
 local_header_rewrite_clients = permit_mynetworks
 
 canonical_maps = regexp:/etc/postfix/canonical
-smtp_generic_maps = texthash:/etc/postfix/generic
-transport_maps = texthash:/etc/postfix/transport
-data_directory = /var/lib/postfix
+{% if postfix_sanitize_headers %}
+header_checks = regexp:/etc/postfix/header_checks
+{% endif %}
+recipient_bcc_maps = regexp:/etc/postfix/bcc_map
+sender_dependent_relayhost_maps = hash:/etc/postfix/sender_relay
+smtp_generic_maps = hash:/etc/postfix/generic
+transport_maps = hash:/etc/postfix/transport
+virtual_alias_maps = hash:/etc/postfix/virtual
 
-{% if postfix_use_recipient_domains %}
-# Block external mail delivery
-maximal_queue_lifetime = 1d
-bounce_queue_lifetime = 12h
+smtp_tls_security_level = may
+smtp_tls_CAfile = /etc/pki/tls/certs/ca-bundle.crt
+
+maximal_queue_lifetime = {{ postfix_maximal_queue_lifetime }}
+bounce_queue_lifetime = {{ postfix_bounce_queue_lifetime }}
+
+{% if postfix_enable_dkim %}
+smtpd_milters           = inet:127.0.0.1:8891
+non_smtpd_milters       = $smtpd_milters
+milter_default_action   = accept
+{% endif %}
+
+{% if postfix_sasl_passwds %}
+smtp_sasl_auth_enable = yes
+smtp_sasl_security_options = noanonymous, noplaintext
+smtp_sasl_tls_security_options = noanonymous
+smtp_sasl_mechanism_filter = plain, login
+smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+smtp_sender_dependent_authentication = yes
+{% endif %}
+
+{% if postfix_allowed_rcpt_domains %}
 smtpd_recipient_restrictions = check_recipient_access hash:/etc/postfix/recipient_domains, reject
 {% endif %}
 
-smtp_tls_security_level = may
+html_directory = no
+readme_directory = /usr/share/doc/postfix-2.6.6/README_FILES
+sample_directory = /usr/share/doc/postfix-2.6.6/samples
+manpage_directory = /usr/share/man
+
+{% for key,value in postfix_additional_settings.iteritems() %}
+{{ key }} = {{ value }}
+{% endfor %}

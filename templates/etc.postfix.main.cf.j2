@@ -78,6 +78,6 @@ readme_directory = /usr/share/doc/postfix-2.6.6/README_FILES
 sample_directory = /usr/share/doc/postfix-2.6.6/samples
 manpage_directory = /usr/share/man
 
-{% for key,value in postfix_additional_settings.iteritems() %}
+{% for key,value in postfix_additional_settings.items() %}
 {{ key }} = {{ value }}
 {% endfor %}

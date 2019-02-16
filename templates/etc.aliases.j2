@@ -5,6 +5,6 @@ postfix: root
 MAILER-DAEMON: postmaster
 nobody: /dev/null
 
-{% for key, value in postfix_aliases.iteritems() %}
+{% for key, value in postfix_aliases.items() %}
 {{ key }}: {{ value | join(',') }}
 {% endfor %}

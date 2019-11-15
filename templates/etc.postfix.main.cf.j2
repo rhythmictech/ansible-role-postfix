@@ -64,7 +64,11 @@ virtual_alias_maps = hash:/etc/postfix/virtual
 {% endif %}
 
 smtp_tls_security_level = may
+{% if ansible_os_family == "RedHat" %}
 smtp_tls_CAfile = /etc/pki/tls/certs/ca-bundle.crt
+{% else %}
+smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+{% endif %}
 
 maximal_queue_lifetime = {{ postfix_maximal_queue_lifetime }}
 bounce_queue_lifetime = {{ postfix_bounce_queue_lifetime }}

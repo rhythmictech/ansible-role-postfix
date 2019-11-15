@@ -42,11 +42,26 @@ canonical_maps = regexp:/etc/postfix/canonical
 {% if postfix_sanitize_headers %}
 header_checks = regexp:/etc/postfix/header_checks
 {% endif %}
+
+{% if postfix_bcc_map %}
 recipient_bcc_maps = regexp:/etc/postfix/bcc_map
+{% endif %}
+
+{% if postfix_sender_relay %}
 sender_dependent_relayhost_maps = hash:/etc/postfix/sender_relay
+{% endif %}
+
+{% if postfix_generic %}
 smtp_generic_maps = hash:/etc/postfix/generic
+{% endif %}
+
+{% if postfix_transports %}
 transport_maps = hash:/etc/postfix/transport
+{% endif %}
+
+{% if postfix_virtual_aliases|default(False) %}
 virtual_alias_maps = hash:/etc/postfix/virtual
+{% endif %}
 
 smtp_tls_security_level = may
 smtp_tls_CAfile = /etc/pki/tls/certs/ca-bundle.crt

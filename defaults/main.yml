@@ -10,6 +10,9 @@ setup_collectd: false
 # setup nagios plugins
 setup_nagios: false
 
+postfix_bcc_map: false
+postfix_generic: false
+
 postfix_inet_interfaces:
   - loopback-only
 

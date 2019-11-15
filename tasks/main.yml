@@ -94,6 +94,7 @@
     mode: 0755
   with_items:
     - check_relay_monitoring.sh
+  when: setup_nagios
   tags: ['postfix', 'ncpa']
 
 - name: ensure postfix is started and enabled

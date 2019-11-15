@@ -6,6 +6,10 @@ postfix_mydomain: "{{ ansible_domain }}"
 # setup collectd postfix config and give collectd group access to maillog
 setup_collectd: false
 
+# If true
+# setup nagios plugins
+setup_nagios: false
+
 postfix_inet_interfaces:
   - loopback-only
 

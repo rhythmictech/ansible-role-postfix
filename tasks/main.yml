@@ -52,7 +52,7 @@
 
 - name: set postfix_daemon_directory fact
   set_fact:
-      postfix_daemon_directory: postfix_daemon_directory.stdout
+      postfix_daemon_directory: '{{ postfix_daemon_directory.stdout }}'
 
 - name: place postfix config file templates (static)
   template: 

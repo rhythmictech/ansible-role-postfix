@@ -5,7 +5,7 @@ smtpd_banner = $myhostname ESMTP Postfix
 data_directory = /var/lib/postfix
 queue_directory = /var/spool/postfix
 command_directory = /usr/sbin
-daemon_directory = {{ postfix_daemon_directory }}
+{{ postfix_daemon_directory }}
 
 alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases

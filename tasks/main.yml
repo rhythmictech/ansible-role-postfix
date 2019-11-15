@@ -120,10 +120,8 @@
   service: name=postfix state=started enabled=yes
   tags: ['postfix']
 
-- name: ensure postfix packages are installed
+- name: Disable backwards compatibility
   shell: |
     postconf compatibility_level=2
     postfix reload
-  when:
-    - ansible_os_family == "Debian"
   tags: ['postfix']

@@ -2,6 +2,10 @@
 postfix_myhostname: "{{ ansible_fqdn }}"
 postfix_mydomain: "{{ ansible_domain }}"
 
+# If true
+# setup collectd postfix config and give collectd group access to maillog
+setup_collectd: false
+
 postfix_inet_interfaces:
   - loopback-only
 

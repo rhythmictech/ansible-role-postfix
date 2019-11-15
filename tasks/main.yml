@@ -69,6 +69,7 @@
 
 - name: make maillog group readable for collectd
   file: path=/var/log/maillog state=touch owner=root group=collectd mode=0640
+  when: setup_collectd
   tags: ['postfix', 'collectd']
 
 - name: place the postfix_collectd config
@@ -81,6 +82,7 @@
   with_items:
     - postfix_collectd.conf
   notify: restart collectd
+  when: setup_collectd
   tags: ['postfix', 'collectd']
 
 - name: place custom nagios plugins

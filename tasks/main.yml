@@ -6,6 +6,17 @@
     - cyrus-sasl
     - cyrus-sasl-lib
     - cyrus-sasl-plain
+  when:
+    - ansible_os_family == "RedHat"
+  tags: ['postfix']
+
+- name: ensure postfix packages are installed
+  apt: name={{ item }} state=present
+  with_items:
+    - postfix
+    - sasl2-bin
+  when:
+    - ansible_os_family == "Debian"
   tags: ['postfix']
 
 - name: configure dkim signing (include)
@@ -34,6 +45,14 @@
     - transport
     - virtual
   tags: ['postfix']
+
+- name: Get postfix daemon location
+  shell: postconf -d daemon_directory
+  register: postfix_daemon_directory
+
+- name: set postfix_daemon_directory fact
+  set_fact:
+      postfix_daemon_directory: postfix_daemon_directory.stdout
 
 - name: place postfix config file templates (static)
   template: 
@@ -99,4 +118,12 @@
 
 - name: ensure postfix is started and enabled
   service: name=postfix state=started enabled=yes
+  tags: ['postfix']
+
+- name: ensure postfix packages are installed
+  shell: |
+    postconf compatibility_level=2
+    postfix reload
+  when:
+    - ansible_os_family == "Debian"
   tags: ['postfix']

@@ -1,20 +1,22 @@
 
 - name: ensure postfix packages are installed
-  yum: name={{ item }} state=present
-  with_items:
-    - postfix
-    - cyrus-sasl
-    - cyrus-sasl-lib
-    - cyrus-sasl-plain
+  yum: 
+    name:
+      - postfix
+      - cyrus-sasl
+      - cyrus-sasl-lib
+      - cyrus-sasl-plain
+    state: present
   when:
     - ansible_os_family == "RedHat"
   tags: ['postfix']
 
 - name: ensure postfix packages are installed
-  apt: name={{ item }} state=present
-  with_items:
-    - postfix
-    - sasl2-bin
+  apt:
+    name:
+      - postfix
+      - sasl2-bin
+    state: present
   when:
     - ansible_os_family == "Debian"
   tags: ['postfix']
@@ -47,7 +49,7 @@
   tags: ['postfix']
 
 - name: Get postfix daemon location
-  shell: postconf -d daemon_directory
+  shell: /sbin/postconf -d daemon_directory
   register: postfix_daemon_directory
 
 - name: set postfix_daemon_directory fact

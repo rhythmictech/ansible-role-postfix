@@ -1,7 +1,5 @@
 # {{ ansible_managed }}
 
-smtpd_banner = $myhostname ESMTP Postfix
-
 data_directory = /var/lib/postfix
 queue_directory = /var/spool/postfix
 command_directory = /usr/sbin
@@ -21,6 +19,9 @@ myhostname = {{ postfix_myhostname }}
 mydomain = {{ postfix_mydomain }}
 myorigin = $mydomain
 mydestination = $myhostname, localhost.$mydomain, localhost
+
+smtpd_banner = $myhostname ESMTP Postfix
+smtp_helo_name = {{ postfix_helo_name | default('$myhostname') }}
 
 inet_protocols = {{ postfix_inet_protocols | default("ipv4") }}
 inet_interfaces = {{ postfix_inet_interfaces | join(', ') }}

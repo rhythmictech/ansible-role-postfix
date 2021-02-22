@@ -1,8 +1,6 @@
 # Enable DKIM signing support
 - name: ensure opendkim packages are installed
-  yum: name={{ item }} state=present
-  with_items:
-    - opendkim
+  yum: name=opendkim state=present
   tags: ['postfix']
 
 - name: place opendkim keys

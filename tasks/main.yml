@@ -1,4 +1,4 @@
-
+---
 - name: ensure postfix packages are installed
   yum: 
     name:
@@ -120,10 +120,4 @@
 
 - name: ensure postfix is started and enabled
   service: name=postfix state=started enabled=yes
-  tags: ['postfix']
-
-- name: Disable backwards compatibility
-  shell: |
-    postconf compatibility_level=2
-    postfix reload
   tags: ['postfix']

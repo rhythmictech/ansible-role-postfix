@@ -31,7 +31,7 @@ mynetworks = {{ postfix_mynetworks | join(', ') }}
 {% endif %}
 
 {% if postfix_relayhost %}
-relayhost = [{{ postfix_relayhost }}]
+relayhost = {{ postfix_relayhost }}
 {% endif %}
 
 message_size_limit = {{ postfix_message_size_limit }}

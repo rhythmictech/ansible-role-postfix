@@ -19,6 +19,7 @@ postfix_inet_interfaces:
 postfix_mynetworks: []
 
 postfix_relayhost:
+postfix_relayhost_port: ''
 
 postfix_maximal_queue_lifetime: 1d
 postfix_bounce_queue_lifetime: 12h

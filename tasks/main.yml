@@ -22,7 +22,7 @@
   tags: ['postfix']
 
 - name: configure dkim signing (include)
-  include: opendkim.yml
+  include_tasks: opendkim.yml
   when: postfix_enable_dkim == true
   tags: ['postfix']
 

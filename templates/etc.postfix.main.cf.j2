@@ -26,7 +26,7 @@ smtp_helo_name = {{ postfix_helo_name | default('$myhostname') }}
 inet_protocols = {{ postfix_inet_protocols | default("ipv4") }}
 inet_interfaces = {{ postfix_inet_interfaces | join(', ') }}
 
-{% if postfix_mynetworks %}
+{% if postfix_mynetworks|length > 1 %}
 mynetworks = {{ postfix_mynetworks | join(', ') }}
 {% endif %}
 
@@ -39,28 +39,25 @@ unknown_local_recipient_reject_code = 550
 
 local_header_rewrite_clients = permit_mynetworks
 
+{% if postfix_canonicals|length > 1 %}
 canonical_maps = regexp:/etc/postfix/canonical
+{% endif %}
 {% if postfix_sanitize_headers %}
 header_checks = regexp:/etc/postfix/header_checks
 {% endif %}
-
-{% if postfix_bcc_map %}
+{% if postfix_bcc_maps|length > 1 %}
 recipient_bcc_maps = regexp:/etc/postfix/bcc_map
 {% endif %}
-
-{% if postfix_sender_relay %}
+{% if postfix_sender_relay|length > 1 %}
 sender_dependent_relayhost_maps = hash:/etc/postfix/sender_relay
 {% endif %}
-
-{% if postfix_generic %}
+{% if postfix_generics|length > 1 %}
 smtp_generic_maps = hash:/etc/postfix/generic
 {% endif %}
-
-{% if postfix_transports %}
+{% if postfix_transports|length > 1 %}
 transport_maps = hash:/etc/postfix/transport
 {% endif %}
-
-{% if postfix_virtual_aliases|default(False) %}
+{% if postfix_virtual_aliases|length > 1 %}
 virtual_alias_maps = hash:/etc/postfix/virtual
 {% endif %}
 

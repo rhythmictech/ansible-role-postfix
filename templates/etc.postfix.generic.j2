@@ -1,7 +1,4 @@
 # {{ ansible_managed }}
-
-{% if postfix_generics|default(False) %}
 {% for entry in postfix_generics %}
 {{ entry.source }} {{ entry.target }}
 {% endfor %}
-{% endif %}

@@ -1,7 +1,4 @@
 # {{ ansible_managed }}
-
-{% if postfix_canonicals|default(False) %}
 {% for entry in postfix_canonicals %}
 {{ entry.source }} {{ entry.target }}
 {% endfor %}
-{% endif %}

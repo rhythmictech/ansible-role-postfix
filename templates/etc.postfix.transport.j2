@@ -1,7 +1,4 @@
 # {{ ansible_managed }}
-
-{% if postfix_transports|default(False) %}
 {% for entry in postfix_transports %}
 {{ entry.source }}  {{ entry.target }}
 {% endfor %}
-{% endif %}

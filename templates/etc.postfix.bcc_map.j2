@@ -1,7 +1,4 @@
 # {{ ansible_managed }}
-
-{% if postfix_bcc_map|default(False) %}
-{% for entry in postfix_bcc_map %}
+{% for entry in postfix_bcc_maps %}
 {{ entry.source }} {{ entry.target }}
 {% endfor %}
-{% endif %}

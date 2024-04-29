@@ -1,7 +1,4 @@
 # {{ ansible_managed }}
-
-{% if postfix_virtual_aliases|default(False) %}
 {% for key, value in postfix_virtual_aliases.items() %}
 {{ key }} {{ value | join(',') }}
 {% endfor %}
-{% endif %}
